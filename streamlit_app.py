@@ -1,7 +1,6 @@
 import streamlit as st
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 
 # Set page configuration
 st.set_page_config(page_title="Crib Coaster", layout="wide")
@@ -24,7 +23,6 @@ user_role = st.sidebar.selectbox(
     "Select User Type",
     ["Parent", "Healthcare Provider", "Administrator"]
 )
-
 st.sidebar.markdown("This demo does not require login. Future updates will integrate authentication.")
 
 # =======================================
@@ -155,4 +153,5 @@ st.markdown("""
 3. **Beta Testing:** Gather real-world feedback from parents, healthcare providers, and administrators.
 4. **Iteration & Scaling:** Refine algorithms and UI based on user feedback; prepare for scalable production.
 """)
+
 
