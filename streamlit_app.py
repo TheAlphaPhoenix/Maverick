@@ -1,115 +1,158 @@
 import streamlit as st
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Set page configuration
+st.set_page_config(page_title="Crib Coaster", layout="wide")
 
 # App Title and Overview
 st.title("Crib Coaster")
 st.markdown("""
-**Project Overview:**  
-Crib Coaster is a smart infant sleep monitoring app and connected device system that helps parents optimize their baby’s sleep by automatically adjusting crib rocking intensity, tracking sleep stages, monitoring vital signs, and providing environmental alerts. The paired device consists of a smart crib riser and orbital shaker mechanism (modeled after a 3D-printed bed riser and an orbital shaker) that fits under each leg of the crib to provide gentle, controlled motion based on real-time baby feedback.
+**Crib Coaster** is a smart infant sleep monitoring app and connected device system that helps parents optimize their baby’s sleep by:
+- Automatically adjusting crib rocking intensity based on real-time baby feedback.
+- Tracking sleep stages and vital signs.
+- Providing environmental alerts.
+- Integrating data with healthcare providers and pediatric consultations.
+
+The paired device consists of a smart crib riser and orbital shaker mechanism (modeled after a 3D-printed bed riser and orbital shaker) that fits under each leg of the crib.
 """)
-
-st.markdown("---")
-st.markdown("### Core Features and Functionalities")
-st.markdown("""
-1. **Motion Detection & Crib Adjustment**  
-   - Connects to the smart riser device to detect baby movements and adjust rocking speed, intensity, and duration.
-   - Uses AI-based motion tracking to identify early waking signs and adjust rocking patterns to soothe the baby.
-   - Allows parents to set customized rocking profiles.
-
-2. **Parent Alert System (Vital Signs & Movement Monitoring)**  
-   - Integrates non-contact vital signs monitoring (breathing rate, movement tracking).
-   - Sends immediate alerts if the baby wakes unexpectedly, experiences irregular breathing, or shows sudden movements.
-   - Allows manual or AI-driven adjustments to crib motion.
-
-3. **Sleep Optimization & Environmental Monitoring**  
-   - Monitors room temperature and humidity to ensure optimal sleep conditions.
-   - Provides automated recommendations if conditions are outside the optimal range (65–72°F, 40–60% humidity).
-   - Integrates with smart home devices (thermostats, humidifiers, fans).
-
-4. **Sleep Tracking & Data Analytics**  
-   - Records sleep duration and stages (light, deep, REM) using motion and sound analysis.
-   - Generates daily/weekly sleep reports, including a sleep efficiency score.
-   - Provides longitudinal data for developmental tracking and exportable reports for pediatrician visits.
-
-5. **AI-Powered Sleep Coaching & Custom Recommendations**  
-   - Offers tailored sleep coaching insights based on tracked data and infant age.
-   - Helps establish healthy bedtime routines with suggestions for soothing techniques and nap schedules.
-
-6. **Customizable Sleep Profiles & Parental Controls**  
-   - Enables personalized sleep and motion preferences.
-   - Supports manual overrides and preset soothing cycles.
-   - Features a "Do Not Disturb" mode for uninterrupted monitoring.
-
-7. **Healthcare & Research Integration**  
-   - Allows data sharing with pediatricians for review of sleep and vital sign history.
-   - Provides API integration for healthcare providers and researchers.
-   - Meets HIPAA compliance for secure health data.
-""")
-
 st.markdown("---")
 
-# Sidebar for User Role Selection
+# Sidebar: User Role Selection
 user_role = st.sidebar.selectbox(
     "Select User Type",
     ["Parent", "Healthcare Provider", "Administrator"]
 )
 
-st.sidebar.markdown("### Demo Navigation")
-st.sidebar.markdown("This demo currently does not require a login but the functionality can be easily integrated later.")
+st.sidebar.markdown("This demo does not require login. Future updates will integrate authentication.")
 
-# Display different dashboards based on user role selection
+# =======================================
+# Parent Dashboard
+# =======================================
 if user_role == "Parent":
-    st.header("Parent User Dashboard")
-    st.markdown("#### Motion Detection & Crib Adjustment")
-    st.write("Automatically adjusts crib rocking based on baby movements. Customize your rocking profile to suit your baby's sleep patterns.")
+    st.header("Parent Dashboard")
     
-    st.markdown("#### Parent Alert System")
-    st.write("Receive real-time notifications for baby movements and vital signs such as breathing rate. Stay informed without constantly checking on your baby.")
+    tabs = st.tabs(["Motion & Crib Adjustment", "Sleep Tracking", "AI Sleep Coaching", "Rocking Profile Customization"])
     
-    st.markdown("#### Sleep Tracking & Data Analytics")
-    st.write("View detailed sleep reports that include sleep duration, sleep stages (light, deep, REM), and overall sleep efficiency. Use these reports during pediatrician visits.")
+    # Tab 1: Motion Detection & Crib Adjustment
+    with tabs[0]:
+        st.subheader("Motion Detection & Crib Adjustment")
+        if st.button("Simulate Crib Motion Adjustment"):
+            st.success("Crib rocking adjusted: Gentle rocking initiated based on detected baby movement.")
+        st.info("This feature uses AI-based motion tracking to detect early waking signs and adjust rocking patterns accordingly.")
     
-    st.markdown("#### AI-Powered Sleep Coaching")
-    st.write("Get tailored sleep coaching insights and recommendations to establish healthy bedtime routines.")
+    # Tab 2: Sleep Tracking & Data Analytics
+    with tabs[1]:
+        st.subheader("Sleep Tracking & Data Analytics")
+        st.write("Simulated sleep data for the past 24 hours:")
+        # Simulate sleep stages data
+        times = pd.date_range("2023-01-01", periods=24, freq="H")
+        sleep_stages = np.random.choice(["Light", "Deep", "REM"], size=24)
+        sleep_data = pd.DataFrame({"Time": times, "Sleep Stage": sleep_stages})
+        st.dataframe(sleep_data)
+        
+        # Plot sleep stage frequency
+        stage_counts = sleep_data["Sleep Stage"].value_counts()
+        st.bar_chart(stage_counts)
     
+    # Tab 3: AI-Powered Sleep Coaching
+    with tabs[2]:
+        st.subheader("AI-Powered Sleep Coaching")
+        if st.button("Generate Sleep Coaching Advice"):
+            st.write("Based on your baby's recent sleep patterns, we recommend a quiet, dim environment and a consistent bedtime routine. Consider lowering the rocking intensity gradually as your baby transitions into deep sleep.")
+    
+    # Tab 4: Customize Rocking Profile
+    with tabs[3]:
+        st.subheader("Customize Rocking Profile")
+        rocking_speed = st.slider("Set Rocking Speed", min_value=1, max_value=10, value=5)
+        rocking_intensity = st.slider("Set Rocking Intensity", min_value=1, max_value=10, value=5)
+        if st.button("Update Rocking Profile"):
+            st.success(f"Profile updated: Speed = {rocking_speed} and Intensity = {rocking_intensity}.")
+
+# =======================================
+# Healthcare Provider Dashboard
+# =======================================
 elif user_role == "Healthcare Provider":
     st.header("Healthcare Provider Dashboard")
-    st.markdown("#### Sleep Data Analytics")
-    st.write("Access exportable reports on infant sleep duration, disruptions, and environmental conditions to support health assessments.")
     
-    st.markdown("#### Vital Signs Monitoring")
-    st.write("Review real-time data on infant breathing patterns and movements, helping identify any irregularities quickly.")
+    tabs = st.tabs(["Sleep Data Analytics", "Vital Signs Monitoring", "Export Reports"])
     
-    st.markdown("#### Research & Data Integration")
-    st.write("Utilize API integration to access aggregated, anonymized sleep data for research and clinical studies.")
+    # Tab 1: Sleep Data Analytics
+    with tabs[0]:
+        st.subheader("Sleep Data Analytics")
+        # Simulate sleep duration data for a week
+        days = pd.date_range(end=pd.Timestamp.today(), periods=7)
+        sleep_duration = np.random.randint(5, 12, size=7)
+        sleep_df = pd.DataFrame({"Day": days, "Sleep Duration (hrs)": sleep_duration})
+        st.line_chart(sleep_df.set_index("Day"))
+        st.write("Simulated sleep duration over the past week.")
     
+    # Tab 2: Vital Signs Monitoring
+    with tabs[1]:
+        st.subheader("Vital Signs Monitoring")
+        if st.button("Simulate Vital Signs Check"):
+            heart_rate = np.random.randint(100, 140)
+            breathing_rate = np.random.randint(30, 40)
+            st.write(f"Current Heart Rate: **{heart_rate} BPM**")
+            st.write(f"Current Breathing Rate: **{breathing_rate} breaths per minute**")
+    
+    # Tab 3: Export Reports
+    with tabs[2]:
+        st.subheader("Export Sleep Report")
+        if st.button("Generate Sleep Report"):
+            st.write("Sleep report generated. [Download Report](#)")
+            st.info("This report includes data on sleep duration, sleep stage distribution, and environmental conditions.")
+
+# =======================================
+# Administrator Dashboard
+# =======================================
 elif user_role == "Administrator":
     st.header("Administrator Dashboard")
-    st.markdown("#### System Configuration")
-    st.write("Configure alert thresholds, adjust motion sensitivity, and manage integrations with smart home and healthcare systems.")
     
-    st.markdown("#### User Management")
-    st.write("Manage user roles and permissions. (Login functionality to be integrated in the future.)")
+    tabs = st.tabs(["System Configuration", "User Management", "Data Security", "Reporting & Analytics"])
     
-    st.markdown("#### Data Security & Compliance")
-    st.write("Monitor data encryption, system backups, and ensure compliance with HIPAA and other regulatory requirements.")
+    # Tab 1: System Configuration
+    with tabs[0]:
+        st.subheader("System Configuration")
+        alert_threshold = st.slider("Alert Threshold (Heart Rate BPM)", min_value=80, max_value=150, value=120)
+        motion_sensitivity = st.slider("Motion Sensitivity", min_value=1, max_value=10, value=5)
+        if st.button("Update System Settings"):
+            st.success(f"Settings updated: Alert Threshold = {alert_threshold} BPM, Motion Sensitivity = {motion_sensitivity}.")
     
-    st.markdown("#### Reporting & Analytics")
-    st.write("Generate and review system-wide performance reports to optimize system functionality.")
+    # Tab 2: User Management
+    with tabs[1]:
+        st.subheader("User Management")
+        st.write("User management functionalities will be integrated with login features in the future.")
+        if st.button("Simulate Adding a New User"):
+            st.success("New user added (simulation).")
+    
+    # Tab 3: Data Security & Compliance
+    with tabs[2]:
+        st.subheader("Data Security & Compliance")
+        if st.button("View Data Security Logs"):
+            st.write("Data Security Logs: All systems operational. No breaches detected.")
+    
+    # Tab 4: Reporting & Analytics
+    with tabs[3]:
+        st.subheader("Reporting & Analytics")
+        if st.button("Generate System Performance Report"):
+            st.write("System performance report generated (simulation).")
 
 st.markdown("---")
 st.markdown("### Technical Specifications Overview")
 st.markdown("""
-- **Device Integration:** 3D-printed with high-strength materials (e.g., polycarbonate, carbon fiber PETG) and a low-noise orbital shaker mechanism.
-- **Connectivity:** Uses Wi-Fi/Bluetooth with an Arduino/Raspberry Pi Pico for sensor and motion control.
-- **Backend & Frontend:** Secure backend (AWS/Firebase/Google Cloud) with a React Native mobile app.
-- **AI/ML:** Powered by TensorFlow or OpenCV for motion and sleep tracking analysis.
+- **Device Integration:** 3D-printed with high-strength materials (polycarbonate, carbon fiber PETG) with a low-noise orbital shaker mechanism.
+- **Connectivity:** Utilizes Wi-Fi/Bluetooth with an Arduino/Raspberry Pi Pico for sensor and motion control.
+- **Backend & Frontend:** Secure backend (AWS/Firebase/Google Cloud) paired with a React Native mobile app.
+- **AI/ML:** Powered by TensorFlow/OpenCV for motion and sleep tracking analysis.
 - **Data Security:** End-to-end encryption and multi-factor authentication.
 """)
-
 st.markdown("### Next Steps")
 st.markdown("""
-1. **Prototype Development:** 3D-print the initial smart crib riser with integrated motion mechanisms.  
-2. **Mobile App MVP:** Develop the initial version with motion control, sleep tracking, and environmental monitoring.  
-3. **Beta Testing:** Gather real-world feedback from parents, healthcare providers, and administrators.  
-4. **Iterate & Scale:** Refine algorithms and UI based on user feedback; prepare for scalable manufacturing.
+1. **Prototype Development:** 3D-print the initial smart crib riser with integrated motion mechanisms.
+2. **Mobile App MVP:** Develop the initial version with motion control, sleep tracking, and environmental monitoring.
+3. **Beta Testing:** Gather real-world feedback from parents, healthcare providers, and administrators.
+4. **Iteration & Scaling:** Refine algorithms and UI based on user feedback; prepare for scalable production.
 """)
+
